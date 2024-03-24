@@ -5,7 +5,4 @@ Simple AWS CI/CD project demonstrating automated deployment pipelines using AWS 
 
 Architecture:
 
-
-
-
-![AWS-cicd-simple-project](https://github.com/DevOps-Article/AWS-cicd-simple-project/assets/73771495/f0bc2c37-b39d-4212-8597-74c731676097)
+<img width="1254" alt="AWS-cicd-simple-project" src="https://github.com/DevOps-Article/AWS-cicd-simple-project/assets/73771495/d4145d12-00ab-4e5c-baa7-83020af592e4">
