@@ -123,7 +123,9 @@ To test the application, acquire the public IP of the EC2 instance and verify it
 Additionally, you can introduce changes to your code, push them to CodeCommit, and observe the pipeline triggering automatic deployments.
 
 
-Thank you,
-DevOps Article
+
+
+**Thank you**
+**Devops Article**
     
     
