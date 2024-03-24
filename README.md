@@ -125,8 +125,6 @@ Additionally, you can introduce changes to your code, push them to CodeCommit, a
 
 
 
-
-
 **Thank you**
 
 
