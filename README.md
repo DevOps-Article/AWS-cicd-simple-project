@@ -1,14 +1,16 @@
 # AWS-cicd-simple-project
 Simple AWS CI/CD project demonstrating automated deployment pipelines using AWS services like, Codecommit, CodeDeploy, CodeBuild, Codepipeline.
 
-
-
 Architecture:
+
+
 
 <img width="1254" alt="AWS-cicd-simple-project" src="https://github.com/DevOps-Article/AWS-cicd-simple-project/assets/73771495/d4145d12-00ab-4e5c-baa7-83020af592e4">
 
 
-**Steps: **
+
+
+**Steps to perform: **
 
 1. Establish a Repository in AWS CodeCommit:
    In my case Repo name is : mydemo-cicd
@@ -22,66 +24,63 @@ Architecture:
 4. Clone the CodeCommit repository into the your local directory, you can do it by selecting "Clone HTTPS" at your Codecommit repository, provide Git credentials when it's prompted and clone the repository into your local directory.
    
    
-6. Navigate into the Git project directory.
+5. Navigate into the Git project directory.
 
-7. Optionally, configure Git using the following commands to avoid repetitive setup:
+6. Optionally, configure Git using the following commands to avoid repetitive setup:
 
-   
-   
+   <img width="728" alt="Screenshot 2024-03-24 at 6 06 58 PM" src="https://github.com/DevOps-Article/AWS-cicd-simple-project/assets/73771495/2fd32c38-35ca-4ac0-a745-db9278d0f980">
 
-8. If you want to do any changes in the project files you can do it and then you can initiate below commands,
-   git status
-   git add
-   git commit -m "project files comiited"
-   git push
-   
-9. Check the AWS Codecommit repository and the code that you have just pushed.
+7. If modifications to project files are necessary, you can do it accordingly and then execute the following commands:
 
-10. Create S3 bucket to store the build Artifacts and copy the erns from bucket properties.
+   <img width="721" alt="Screenshot 2024-03-24 at 6 07 22 PM" src="https://github.com/DevOps-Article/AWS-cicd-simple-project/assets/73771495/fc133419-0a85-4cc1-938b-2716a958e01e">
 
-11. Creates Ec2 instance:
-    public IP: enabled,
-    Key pair: required to login to instance
-    Security Group- open ssh, http and https ports (you can open with anywhere or select my ip only)
+8. Now, you can verify the presence of the pushed code in the AWS CodeCommit repository.
 
-12. Install AWS Code Deploy Agent on Ec2 with the given script.
-    You can copy all data from EC2_script.txt, login to Ec2 and make the new file called EC2_script.sh, make this file executable by giving permission
-    e.g.
-    chmod +x EC2_script.sh and then run this file with the command
+9. Create an S3 bucket for storing build artifacts by goign to S3 console.
+
+10. Deploy an EC2 instance with the following specifications:
+    Public IP enabled
+    Key pair required for instance access/login
+    Security Group configured to open SSH, HTTP, and HTTPS ports (adjust for specific IP or open to any IP)
+
+11. Install the AWS CodeDeploy Agent on the EC2 instance using the provided script.
+    Copy the contents from EC2_script.txt,
+    create a new file named EC2_script.sh on the EC2 instance,
+    make it executable with below command,
+    chmod +x EC2_script.sh
+    execute the script withe below command
     ./EC2_script.sh
-    IMP: before run, make sure aws region is correct to yours if not you can change it accordingly on line no 6 of the EC2_script.sh file.
+    **Note:**  Before execution, ensure the AWS region in the script (line no 6) matches your region.
 
-13. Go to CodeBuild and create CodeBuild Project  
-    In my case Codebuild project name is:  simple-cicd-demo
-    Source- AWS Codecommite
-    Repository- Select your created repository
-    Branch-  main
-    Provisioning model- on demand
-    Environment image- Managed image
-    Compute-  EC2
-    Operating system-  Select accordingly (in my case I am using Ubuntu )
-    Runtime(s) standard
-    Image- standard7.0
-    Image version-  Always use latest images for this runtime version
-    Buildspec-  Select use a Buildspec files
-    Artifact 1 - Primary-  Amazon s3
-    Bucket name-  give your actual bucket name (carfully, it is case sensative)
-    Artifacts packaging-  Select Zip
-    Service role permissions-   Select Create New Scervice Role (It will automatically create new service role for CodeBuild)
+12. Proceed to CodeBuild and create a CodeBuild Project with the following settings:
+    Project name: you can give any name, in my case I have given "simple-cicd-demo"
+    Source: AWS CodeCommit
+    Repository: Select the your created repository
+    Branch: main
+    Provisioning model: On demand
+    Environment image: Managed image
+    Compute: EC2
+    Operating system: Choose appropriate OS (in my case Ubuntu)
+    Runtime: Standard
+    Image: standard7.0
+    Image version: Latest for the selected runtime version
+    Buildspec: Use a Buildspec file
+    Primary Artifact: Amazon S3
+    Bucket name: Specify your bucket name carefully (case sensitive)
+    Artifact packaging: Zip
+    Service role permissions: Create a new Service Role (This automatically generates a new service role for CodeBuild)
     
 
-14. Now, Go to IAM and find the role which created for Codebuild, You have to attach additional policies to this role like below:
-    AmazonS3FullAccess (to upload build artifacts on S3 bucket)
-    Also verify "Trust Relationship" for this role, it should be like below,
+13. Navigate to IAM and locate the role created for CodeBuild. Attach additional policies to this role, including:
+    AmazonS3FullAccess (for uploading build artifacts to S3 bucket)
+    Also, verify the "Trust Relationship" for this role to ensure it resembles the following:
 
- 
-       
-<img width="653" alt="Screenshot 2024-03-24 at 5 11 47 PM" src="https://github.com/DevOps-Article/AWS-cicd-simple-project/assets/73771495/226632be-b7c6-4843-acff-7a4bac2a0b69">
+    <img width="715" alt="Screenshot 2024-03-24 at 6 20 00 PM" src="https://github.com/DevOps-Article/AWS-cicd-simple-project/assets/73771495/230603f8-879e-4459-84c7-6ba1e718e6f7">
 
-14. Create Build Project and check all the status of Build, also if buld runs successfully artifacts shoud be stored on S3 bucket
+14. "Establish a Build Project to monitor the status of builds comprehensively. Upon successful build execution, ensure artifacts are securely stored in an S3 bucket.
 
 
-15. Go to IAM and create Code Deploy service role, this role should have below permissions attahed. (ofcourse it can be restricted to least) but for simplicity you can attach all below managed policies. THIS ROLE ALLOW CODEDEPLOY & EC2 TO PERFORM ALL CODE DEPLOY OPERATIONS
+15. Navigate to IAM to generate a CodeDeploy service role, equipped with the following permissions. While it's possible to restrict permissions to the bare minimum, for simplicity, attach all relevant managed policies to this role. This role enables CodeDeploy and EC2 to execute all CodeDeploy operations seamlessly."
 
 <img width="859" alt="Screenshot 2024-03-24 at 5 17 18 PM" src="https://github.com/DevOps-Article/AWS-cicd-simple-project/assets/73771495/396bc97c-e254-46a1-af79-63fee633e647">
 
@@ -90,40 +89,41 @@ Also verify Trust Relationship for this role and it should be like below,
 <img width="658" alt="Screenshot 2024-03-24 at 5 18 11 PM" src="https://github.com/DevOps-Article/AWS-cicd-simple-project/assets/73771495/eb75b65d-247e-422a-9429-f39cd74d7ecd">
 
 
-16. Go to Code Deployment and creates:
-     Aew Application:  give any names
-     Compute platform:  Ec2
+16. Proceed to the CodeDeploy service and initiate the creation of a new application:
+    Application Name: Choose a suitable name.
+    Compute Platform: Select EC2.
 
-17. Go inside the application, select application and Create deployment group
-    Deployment group name:   give any names
-    Service role: Select service role that already we have created
-    Deployment type: In place
-    Environment configuration:  Amazon EC2 instances
-    Deployment settings:  Select AllAtOnce
-    Finally- click on create Deployment group.
+17. Within the newly created application, navigate to the deployment group section and create a new deployment group:
+    Deployment Group Name: Provide a distinctive name.
+    Service Role: Choose an existing service role.
+    Deployment Type: Opt for 'In place'.
+    Environment Configuration: Specify 'Amazon EC2 instances'.
+    Deployment Settings: Choose 'AllAtOnce'.
+    Finally, click on 'Create Deployment Group'.
 
-18 Go to Pipeline and create new pipeline,
-   Pipeline name: give any name
-   Pipeline type: V2
-   Execution mode: Queued (Pipeline type V2 required)
-   Service role: Seletc New service role (it will automatically create new role and required permissions) make sure to enable Allow AWS CodePipeline 
-   to create a service role so it can be used with this new pipeline
-   Advanced settings: Artifact store: You can choose default or custome location of S3 to store build artifacts
-   Encryption key:  AWS Managed Key
-   Sources:  Give the codecommit repository
-   Build:  Select AWS CodeBuild
-   Deploy: Select AWSCodeDeply
-   Review and finally creates the pipeline.
+18 Move to the AWS CodePipeline service and commence the creation of a new pipeline:
+   Pipeline Name: Assign a descriptive name.
+   Pipeline Type: Select V2.
+   Execution Mode: Opt for 'Queued' (Pipeline type V2 required).
+   Service Role: Choose 'Create a new service role', ensuring to enable 'Allow AWS CodePipeline to create a service role' to facilitate its usage 
+   with the new pipeline.
+   Advanced Settings:
+   Artifact Store: Default or custom S3 location for storing build artifacts.
+   Encryption Key: Utilize AWS Managed Key.
+   Sources: Specify the CodeCommit repository.
+   Build: Choose AWS CodeBuild.
+   Deploy: Select AWS CodeDeploy.
+   Review and finalize the pipeline creation.
 
-19. Monitor your piple line stages like, Source, Build & Deploy, if everything well then pipeline should be success and code
-    Should be deploy on Ec2.
+19. Monitor the stages of your pipeline, including Source, Build, and Deploy. A successful pipeline execution will result in the deployment of the 
+   code onto EC2 instances.
 
-Testing:
-Now, for testing you can take Ec2 public IP and check the application is working or not in web the browser.
-Additionally- you can make a changes in your code, push the code to codecommite and pipeline should trigger automatically.
+**Testing:**
+To test the application, acquire the public IP of the EC2 instance and verify its functionality via a web browser.
+Additionally, you can introduce changes to your code, push them to CodeCommit, and observe the pipeline triggering automatic deployments.
 
 
-Thanks
-Devops Artile
+Thank you,
+DevOps Article
     
     
